@@ -11,11 +11,6 @@ const config = {
         path: path.resolve(__dirname, './dist'),
         filename: 'app.[contenthash].js',
     },
-    optimization: {
-        splitChunks: {
-            chunks: 'all',
-        },
-    },
     module: {
         rules: [
             {

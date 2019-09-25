@@ -7,6 +7,7 @@ export class Skier extends Entity {
 
     direction = Constants.SKIER_DIRECTIONS.DOWN;
     speed = Constants.SKIER_STARTING_SPEED;
+    action = Constants.SKIER_ACTIONS.SKYING;
 
     constructor(x, y) {
         super(x, y);
@@ -19,6 +20,14 @@ export class Skier extends Entity {
 
     updateAsset() {
         this.assetName = Constants.SKIER_DIRECTION_ASSET[this.direction];
+    }
+
+    setAction(action) {
+        this.action = action;
+    }
+
+    getAction(action) {
+        return this.action;
     }
 
     move() {
@@ -86,6 +95,23 @@ export class Skier extends Entity {
         }
     }
 
+    jump() {
+        if (this.isJumping()) {
+            return false;
+        }
+
+        this.action = Constants.SKIER_ACTIONS.JUMPING;
+
+        // Push the previous asset to restore the skier
+        this.animate([...Constants.JUMP_FRAMES, this.assetName], Constants.JUMPING_DURATION).then(() => {
+            this.action = Constants.SKIER_ACTIONS.SKYING;
+        });
+    }
+
+    isJumping() {
+        return this.action === Constants.SKIER_ACTIONS.JUMPING;
+    }
+
     turnUp() {
         if(this.direction === Constants.SKIER_DIRECTIONS.LEFT || this.direction === Constants.SKIER_DIRECTIONS.RIGHT) {
             this.moveSkierUp();
@@ -115,7 +141,20 @@ export class Skier extends Entity {
                 obstaclePosition.y
             );
 
-            return intersectTwoRects(skierBounds, obstacleBounds);
+            const hasCollition = intersectTwoRects(skierBounds, obstacleBounds);
+
+            // If we hit a jump, then let's the skier jump
+            if (hasCollition && obstacle.isRamp()) {
+                this.jump();
+                return false;
+            }
+
+            // If the skier is jumping and he hits an obstacle that can be jumped, then ignore the hit
+            if (hasCollition && obstacle.canBeJumped() && this.isJumping()) {
+                return false;
+            }
+
+            return hasCollition;
         });
 
         if(collision) {
