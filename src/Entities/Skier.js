@@ -1,12 +1,14 @@
 import * as Constants from "../Constants";
 import { Entity } from "./Entity";
 import { intersectTwoRects, Rect } from "../Core/Utils";
+import {SKIER_JUMP1} from '../Constants'
 
 export class Skier extends Entity {
     assetName = Constants.SKIER_DOWN;
 
     direction = Constants.SKIER_DIRECTIONS.DOWN;
     speed = Constants.SKIER_STARTING_SPEED;
+    action = Constants.SKIER_ACTIONS.SKYING;
 
     constructor(x, y) {
         super(x, y);
@@ -19,6 +21,14 @@ export class Skier extends Entity {
 
     updateAsset() {
         this.assetName = Constants.SKIER_DIRECTION_ASSET[this.direction];
+    }
+
+    setAction(action) {
+        this.action = action;
+    }
+
+    getAction(action) {
+        return this.action;
     }
 
     move() {
@@ -86,6 +96,23 @@ export class Skier extends Entity {
         }
     }
 
+    jump() {
+        if (this.isJumping()) {
+            return false;
+        }
+
+        this.action = Constants.SKIER_ACTIONS.JUMPING;
+
+        // Push the previous asset to restore the skier
+        this.animate([...Constants.JUMP_FRAMES, this.assetName], Constants.JUMPING_DURATION).then(() => {
+            this.action = Constants.SKIER_ACTIONS.SKYING;
+        });
+    }
+
+    isJumping() {
+        return this.action === Constants.SKIER_ACTIONS.JUMPING;
+    }
+
     turnUp() {
         if(this.direction === Constants.SKIER_DIRECTIONS.LEFT || this.direction === Constants.SKIER_DIRECTIONS.RIGHT) {
             this.moveSkierUp();
@@ -115,7 +142,13 @@ export class Skier extends Entity {
                 obstaclePosition.y
             );
 
-            return intersectTwoRects(skierBounds, obstacleBounds);
+            const hasCollition = intersectTwoRects(skierBounds, obstacleBounds);
+
+            if (hasCollition && obstacle.canBeJumped() && this.isJumping()) {
+                return false;
+            }
+
+            return hasCollition;
         });
 
         if(collision) {
