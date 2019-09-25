@@ -27,7 +27,6 @@ export class Skier extends Entity {
     }
 
     move() {
-        console.log('Moving skier');
         switch(this.direction) {
             case Constants.SKIER_DIRECTIONS.LEFT_DOWN:
                 this.moveSkierLeftDown();

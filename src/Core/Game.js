@@ -10,6 +10,7 @@ export class Game {
     gameWindow = null;
     gameStatus = Constants.GAME_STATUS.INIT;
     overlayText = null;
+    gameLoaded = false;
 
     constructor() {
         this.assetManager = new AssetManager();
@@ -21,11 +22,21 @@ export class Game {
     }
 
     init() {
-        this.obstacleManager.placeInitialObstacles();
+
     }
 
     async load() {
         await this.assetManager.loadAssets(Constants.ASSETS);
+    }
+
+    startGame() {
+        if (!this.gameLoaded) {
+            this.obstacleManager.placeInitialObstacles();
+            this.gameLoaded = true;
+        }
+
+        this.updateGameWindow();
+        this.drawGameWindow();
     }
 
     run() {
@@ -34,8 +45,7 @@ export class Game {
         // GameStatus: Running, Pause or GameOver
         switch (this.gameStatus) {
             case Constants.GAME_STATUS.RUNNING:
-                this.updateGameWindow();
-                this.drawGameWindow();
+                this.startGame();
                 break;
             case Constants.GAME_STATUS.GAME_OVER:
                 this.overlayText.draw('Game Over');
@@ -77,6 +87,26 @@ export class Game {
         this.gameWindow = new Rect(left, top, left + Constants.GAME_WIDTH, top + Constants.GAME_HEIGHT);
     }
 
+    setPause() {
+        if (this.gameStatus === Constants.GAME_STATUS.PAUSE) {
+            return false;
+        }
+
+        this.gameStatus = Constants.GAME_STATUS.PAUSE;
+    }
+
+    setResumeGame() {
+        if (this.gameStatus === Constants.GAME_STATUS.RUNNING) {
+            return false;
+        }
+
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            this.init();
+        }
+
+        this.gameStatus = Constants.GAME_STATUS.RUNNING;
+    }
+
     handleKeyDown(event) {
         switch (event.which) {
             case Constants.KEYS.LEFT:
@@ -100,11 +130,11 @@ export class Game {
                 event.preventDefault();
                 break;
             case Constants.KEYS.ENTER:
-                this.gameStatus = Constants.GAME_STATUS.RUNNING;
+                this.setResumeGame();
                 event.preventDefault();
                 break;
             case Constants.KEYS.ESCAPE:
-                this.gameStatus = Constants.GAME_STATUS.PAUSE;
+                this.setPause();
                 event.preventDefault();
                 break;
         }
