@@ -1,6 +1,6 @@
 const path = require('path');
 const htmlWebpackPlugin = require('html-webpack-plugin')
-require("@babel/register");
+require('@babel/register');
 
 // Webpack Configuration
 const config = {
@@ -9,11 +9,15 @@ const config = {
 
     output: {
         path: path.resolve(__dirname, './dist'),
-        filename: 'bundle.js',
+        filename: 'app.[contenthash].js',
     },
-
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
     module: {
-        rules : [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -26,14 +30,14 @@ const config = {
             {
                 test: /\.png$/,
                 use: ['file-loader'],
-            }
-        ]
+            },
+        ],
     },
 
     plugins: [
         new htmlWebpackPlugin({
-            title: 'Southteams Ski'
-        })
+            title: 'Southteams Ski',
+        }),
     ],
 };
 
