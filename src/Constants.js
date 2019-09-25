@@ -65,8 +65,19 @@ export const SKIER_ACTIONS = {
 }
 
 export const JUMP_FRAMES = [
-    SKIER_JUMP1, SKIER_JUMP2, SKIER_JUMP3, SKIER_JUMP4, SKIER_JUMP5,
+    SKIER_JUMP1,
+    SKIER_JUMP2,
+    SKIER_JUMP3,
+    SKIER_JUMP4,
+    SKIER_JUMP5,
 ];
+
+export const GAME_STATUS = {
+    RUNNING: 'RUNNING',
+    PAUSE: 'PAUSE',
+    GAME_OVER: 'GAME_OVER',
+    INIT: 'INIT',
+};
 
 export const KEYS = {
     LEFT: 37,
@@ -74,4 +85,6 @@ export const KEYS = {
     UP: 38,
     DOWN: 40,
     SPACE: 32,
+    ENTER: 13,
+    ESCAPE: 27,
 };

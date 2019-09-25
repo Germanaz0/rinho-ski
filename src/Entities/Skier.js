@@ -26,11 +26,8 @@ export class Skier extends Entity {
         this.action = action;
     }
 
-    getAction(action) {
-        return this.action;
-    }
-
     move() {
+        console.log('Moving skier');
         switch(this.direction) {
             case Constants.SKIER_DIRECTIONS.LEFT_DOWN:
                 this.moveSkierLeftDown();
@@ -100,11 +97,11 @@ export class Skier extends Entity {
             return false;
         }
 
-        this.action = Constants.SKIER_ACTIONS.JUMPING;
+        this.setAction(Constants.SKIER_ACTIONS.JUMPING);
 
         // Push the previous asset to restore the skier
         this.animate([...Constants.JUMP_FRAMES, this.assetName], Constants.JUMPING_DURATION).then(() => {
-            this.action = Constants.SKIER_ACTIONS.SKYING;
+            this.setAction(Constants.SKIER_ACTIONS.SKYING)
         });
     }
 

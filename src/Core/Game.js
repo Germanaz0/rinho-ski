@@ -1,19 +1,22 @@
-import * as Constants from "../Constants";
-import { AssetManager } from "./AssetManager";
-import { Canvas } from './Canvas';
-import { Skier } from "../Entities/Skier";
-import { ObstacleManager } from "../Entities/Obstacles/ObstacleManager";
-import { Rect } from './Utils';
+import * as Constants from '../Constants';
+import {AssetManager} from './AssetManager';
+import {Canvas} from './Canvas';
+import {Skier} from '../Entities/Skier';
+import {ObstacleManager} from '../Entities/Obstacles/ObstacleManager';
+import {Rect} from './Utils';
+import {OverlayText} from './OverlayText'
 
 export class Game {
     gameWindow = null;
+    gameStatus = Constants.GAME_STATUS.INIT;
+    overlayText = null;
 
     constructor() {
         this.assetManager = new AssetManager();
         this.canvas = new Canvas(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
         this.skier = new Skier(0, 0);
         this.obstacleManager = new ObstacleManager();
-
+        this.overlayText = new OverlayText(this.canvas);
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
@@ -28,8 +31,22 @@ export class Game {
     run() {
         this.canvas.clearCanvas();
 
-        this.updateGameWindow();
-        this.drawGameWindow();
+        // GameStatus: Running, Pause or GameOver
+        switch (this.gameStatus) {
+            case Constants.GAME_STATUS.RUNNING:
+                this.updateGameWindow();
+                this.drawGameWindow();
+                break;
+            case Constants.GAME_STATUS.GAME_OVER:
+                this.overlayText.draw('Game Over');
+                break;
+            case Constants.GAME_STATUS.PAUSE:
+                this.overlayText.draw('Game Paused');
+                break;
+            default:
+                this.overlayText.draw('Welcome to Ski');
+                break;
+        }
 
         requestAnimationFrame(this.run.bind(this));
     }
@@ -61,7 +78,7 @@ export class Game {
     }
 
     handleKeyDown(event) {
-        switch(event.which) {
+        switch (event.which) {
             case Constants.KEYS.LEFT:
                 this.skier.turnLeft();
                 event.preventDefault();
@@ -80,6 +97,14 @@ export class Game {
                 break;
             case Constants.KEYS.SPACE:
                 this.skier.jump();
+                event.preventDefault();
+                break;
+            case Constants.KEYS.ENTER:
+                this.gameStatus = Constants.GAME_STATUS.RUNNING;
+                event.preventDefault();
+                break;
+            case Constants.KEYS.ESCAPE:
+                this.gameStatus = Constants.GAME_STATUS.PAUSE;
                 event.preventDefault();
                 break;
         }
