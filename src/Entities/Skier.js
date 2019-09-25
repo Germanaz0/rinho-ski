@@ -1,7 +1,6 @@
 import * as Constants from "../Constants";
 import { Entity } from "./Entity";
 import { intersectTwoRects, Rect } from "../Core/Utils";
-import {SKIER_JUMP1} from '../Constants'
 
 export class Skier extends Entity {
     assetName = Constants.SKIER_DOWN;
@@ -144,6 +143,13 @@ export class Skier extends Entity {
 
             const hasCollition = intersectTwoRects(skierBounds, obstacleBounds);
 
+            // If we hit a jump, then let's the skier jump
+            if (hasCollition && obstacle.isRamp()) {
+                this.jump();
+                return false;
+            }
+
+            // If the skier is jumping and he hits an obstacle that can be jumped, then ignore the hit
             if (hasCollition && obstacle.canBeJumped() && this.isJumping()) {
                 return false;
             }

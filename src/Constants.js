@@ -11,6 +11,7 @@ export const TREE = 'tree';
 export const TREE_CLUSTER = 'treeCluster';
 export const ROCK1 = 'rock1';
 export const ROCK2 = 'rock2';
+export const JUMP_RAMP = 'jumpRamp';
 export const SKIER_JUMP1 = 'skierJump1';
 export const SKIER_JUMP2 = 'skierJump2';
 export const SKIER_JUMP3 = 'skierJump3';
@@ -32,6 +33,7 @@ export const ASSETS = {
     [TREE_CLUSTER]: 'img/tree_cluster.png',
     [ROCK1]: 'img/rock_1.png',
     [ROCK2]: 'img/rock_2.png',
+    [JUMP_RAMP]: 'img/jump_ramp.png',
     [SKIER_JUMP1]: 'img/skier_jump_1.png',
     [SKIER_JUMP2]: 'img/skier_jump_2.png',
     [SKIER_JUMP3]: 'img/skier_jump_3.png',

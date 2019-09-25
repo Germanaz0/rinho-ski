@@ -7,6 +7,7 @@ const assetTypes = [
     Constants.TREE_CLUSTER,
     Constants.ROCK1,
     Constants.ROCK2,
+    Constants.JUMP_RAMP,
 ];
 
 export class Obstacle extends Entity {
@@ -24,5 +25,9 @@ export class Obstacle extends Entity {
         }
 
         return false;
+    }
+
+    isRamp() {
+        return this.assetName === Constants.JUMP_RAMP;
     }
 }
