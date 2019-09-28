@@ -5,6 +5,7 @@ import {Skier} from '../Entities/Skier';
 import {ObstacleManager} from '../Entities/Obstacles/ObstacleManager';
 import {Rect} from './Utils';
 import {OverlayText} from './OverlayText'
+import {Yeti} from '../Entities/Yeti'
 
 export class Game {
     gameWindow = null;
@@ -18,6 +19,7 @@ export class Game {
         this.skier = new Skier(0, 0);
         this.obstacleManager = new ObstacleManager();
         this.overlayText = new OverlayText(this.canvas);
+        this.rhino = new Yeti(0, 0);
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
@@ -70,12 +72,18 @@ export class Game {
         this.obstacleManager.placeNewObstacle(this.gameWindow, previousGameWindow);
 
         this.skier.checkIfSkierHitObstacle(this.obstacleManager, this.assetManager);
+
+        this.rhino.move(this.assetManager, this.gameWindow, this.skier).then(rhinoWins => {
+            if (rhinoWins) {
+                this.setGameOver();
+            }
+        });
     }
 
     drawGameWindow() {
         this.canvas.setDrawOffset(this.gameWindow.left, this.gameWindow.top);
-
         this.skier.draw(this.canvas, this.assetManager);
+        this.rhino.draw(this.canvas, this.assetManager);
         this.obstacleManager.drawObstacles(this.canvas, this.assetManager);
     }
 
@@ -95,13 +103,21 @@ export class Game {
         this.gameStatus = Constants.GAME_STATUS.PAUSE;
     }
 
+    setGameOver() {
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            return false;
+        }
+
+        this.gameStatus = Constants.GAME_STATUS.GAME_OVER;
+    }
+
     setResumeGame() {
         if (this.gameStatus === Constants.GAME_STATUS.RUNNING) {
             return false;
         }
 
         if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
-            this.init();
+            document.location.reload(true);
         }
 
         this.gameStatus = Constants.GAME_STATUS.RUNNING;

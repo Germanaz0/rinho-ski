@@ -17,6 +17,16 @@ export const SKIER_JUMP2 = 'skierJump2';
 export const SKIER_JUMP3 = 'skierJump3';
 export const SKIER_JUMP4 = 'skierJump4';
 export const SKIER_JUMP5 = 'skierJump5';
+export const RHINO_DEFAULT = 'rhinoDefault';
+export const RHINO_LIFT = 'rhinoLift';
+export const RHINO_LIFT_MOUTH_OPEN = 'rhinoLiftMouthOpen';
+export const RHINO_LIFT_EAT1 = 'rhinoLiftEat1';
+export const RHINO_LIFT_EAT2 = 'rhinoLiftEat2';
+export const RHINO_LIFT_EAT3 = 'rhinoLiftEat3';
+export const RHINO_LIFT_EAT4 = 'rhinoLiftEat4';
+export const RHINO_RUN_LEFT1 = 'rhinoRunLeft1';
+export const RHINO_RUN_LEFT2 = 'rhinoRunLeft2';
+
 export const JUMPING_DURATION = 1200;
 
 export const SKIER_STARTING_SPEED = 10;
@@ -39,6 +49,16 @@ export const ASSETS = {
     [SKIER_JUMP3]: 'img/skier_jump_3.png',
     [SKIER_JUMP4]: 'img/skier_jump_4.png',
     [SKIER_JUMP5]: 'img/skier_jump_5.png',
+
+    [RHINO_DEFAULT]: 'img/rhino_default.png',
+    [RHINO_LIFT]: 'img/rhino_lift.png',
+    [RHINO_LIFT_MOUTH_OPEN]: 'img/rhino_lift_mouth_open.png',
+    [RHINO_LIFT_EAT1]: 'img/rhino_lift_eat_1.png',
+    [RHINO_LIFT_EAT2]: 'img/rhino_lift_eat_2.png',
+    [RHINO_LIFT_EAT3]: 'img/rhino_lift_eat_3.png',
+    [RHINO_LIFT_EAT4]: 'img/rhino_lift_eat_4.png',
+    [RHINO_RUN_LEFT1]: 'img/rhino_run_left.png',
+    [RHINO_RUN_LEFT2]: 'img/rhino_run_left_2.png',
 };
 
 export const SKIER_DIRECTIONS = {
@@ -62,6 +82,11 @@ export const SKIER_DIRECTION_ASSET = {
 export const SKIER_ACTIONS = {
     JUMPING: 'JUMPING',
     SKYING: 'SKYING',
+}
+
+export const RHINO_ACTIONS = {
+    RUNNING: 'RUNNING',
+    EATING: 'EATING',
 }
 
 export const JUMP_FRAMES = [

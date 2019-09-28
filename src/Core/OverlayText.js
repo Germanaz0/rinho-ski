@@ -45,7 +45,7 @@ export class OverlayText {
         // this animates the color based on the value of `hue`
         this.ctx.fillStyle = color;
         this.ctx.font = '24px monospace';
-        this.centerText('Press enter to play', y + 35);
+        this.centerText('Press enter to start', y + 35);
 
         this.ctx.font = '16px monospace';
         this.centerText('Controls: arrow keys to move and space to jump', y + 75);
