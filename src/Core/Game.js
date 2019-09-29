@@ -1,35 +1,66 @@
-import * as Constants from "../Constants";
-import { AssetManager } from "./AssetManager";
-import { Canvas } from './Canvas';
-import { Skier } from "../Entities/Skier";
-import { ObstacleManager } from "../Entities/Obstacles/ObstacleManager";
-import { Rect } from './Utils';
+import * as Constants from '../Constants';
+import {AssetManager} from './AssetManager';
+import {Canvas} from './Canvas';
+import {Skier} from '../Entities/Skier';
+import {ObstacleManager} from '../Entities/Obstacles/ObstacleManager';
+import {Rect} from './Utils';
+import {OverlayText} from './OverlayText'
+import {Yeti} from '../Entities/Yeti'
 
 export class Game {
     gameWindow = null;
+    gameStatus = Constants.GAME_STATUS.INIT;
+    overlayText = null;
+    gameLoaded = false;
 
     constructor() {
         this.assetManager = new AssetManager();
         this.canvas = new Canvas(Constants.GAME_WIDTH, Constants.GAME_HEIGHT);
         this.skier = new Skier(0, 0);
         this.obstacleManager = new ObstacleManager();
-
+        this.overlayText = new OverlayText(this.canvas);
+        this.rhino = null;
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
     init() {
-        this.obstacleManager.placeInitialObstacles();
+        setTimeout(() => {
+            this.rhino = new Yeti(this.gameWindow.left, this.gameWindow.bottom);
+        }, Constants.RHINO_START_MILISECONDS);
     }
 
     async load() {
         await this.assetManager.loadAssets(Constants.ASSETS);
     }
 
-    run() {
-        this.canvas.clearCanvas();
+    startGame() {
+        if (!this.gameLoaded) {
+            this.obstacleManager.placeInitialObstacles();
+            this.gameLoaded = true;
+        }
 
         this.updateGameWindow();
         this.drawGameWindow();
+    }
+
+    run() {
+        this.canvas.clearCanvas();
+
+        // GameStatus: Running, Pause or GameOver
+        switch (this.gameStatus) {
+            case Constants.GAME_STATUS.RUNNING:
+                this.startGame();
+                break;
+            case Constants.GAME_STATUS.GAME_OVER:
+                this.overlayText.draw('Game Over');
+                break;
+            case Constants.GAME_STATUS.PAUSE:
+                this.overlayText.draw('Game Paused');
+                break;
+            default:
+                this.overlayText.draw('Welcome to Ski');
+                break;
+        }
 
         requestAnimationFrame(this.run.bind(this));
     }
@@ -43,12 +74,35 @@ export class Game {
         this.obstacleManager.placeNewObstacle(this.gameWindow, previousGameWindow);
 
         this.skier.checkIfSkierHitObstacle(this.obstacleManager, this.assetManager);
+
+        if (this.rhino) {
+            this.rhino.move(this.assetManager, this.gameWindow, this.skier)
+                .then(this.checkRhinhoWins.bind(this)).catch(() => {});
+        }
+
+    }
+
+    async checkRhinhoWins(rhinoWins) {
+
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            return Promise.reject();
+        }
+
+        if (!rhinoWins) {
+            return Promise.reject();
+        }
+
+        this.skier.setDirection(Constants.SKIER_DIRECTIONS.DEATH);
+        this.setGameOver();
+        return Promise.resolve();
     }
 
     drawGameWindow() {
         this.canvas.setDrawOffset(this.gameWindow.left, this.gameWindow.top);
-
         this.skier.draw(this.canvas, this.assetManager);
+        if (this.rhino) {
+            this.rhino.draw(this.canvas, this.assetManager);
+        }
         this.obstacleManager.drawObstacles(this.canvas, this.assetManager);
     }
 
@@ -60,8 +114,48 @@ export class Game {
         this.gameWindow = new Rect(left, top, left + Constants.GAME_WIDTH, top + Constants.GAME_HEIGHT);
     }
 
+    setPause() {
+        if (this.gameStatus === Constants.GAME_STATUS.PAUSE) {
+            return false;
+        }
+
+        this.gameStatus = Constants.GAME_STATUS.PAUSE;
+    }
+
+    setGameOver() {
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            return false;
+        }
+
+        if (typeof this.rhinoEating === 'undefined') {
+            this.rhinoEating = false;
+        }
+
+        if (this.rhinoEating) {
+            return false;
+        }
+
+        this.rhinoEating = true;
+
+        this.rhino.animateEat().then(() => {
+            this.gameStatus = Constants.GAME_STATUS.GAME_OVER;
+        });
+    }
+
+    setResumeGame() {
+        if (this.gameStatus === Constants.GAME_STATUS.RUNNING) {
+            return false;
+        }
+
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            document.location.reload(true);
+        }
+
+        this.gameStatus = Constants.GAME_STATUS.RUNNING;
+    }
+
     handleKeyDown(event) {
-        switch(event.which) {
+        switch (event.which) {
             case Constants.KEYS.LEFT:
                 this.skier.turnLeft();
                 event.preventDefault();
@@ -80,6 +174,14 @@ export class Game {
                 break;
             case Constants.KEYS.SPACE:
                 this.skier.jump();
+                event.preventDefault();
+                break;
+            case Constants.KEYS.ENTER:
+                this.setResumeGame();
+                event.preventDefault();
+                break;
+            case Constants.KEYS.ESCAPE:
+                this.setPause();
                 event.preventDefault();
                 break;
         }
