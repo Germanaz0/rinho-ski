@@ -1,5 +1,6 @@
 export const GAME_WIDTH = window.innerWidth;
 export const GAME_HEIGHT = window.innerHeight;
+export const RHINO_START_MILISECONDS = 15000;
 
 export const SKIER_CRASH = 'skierCrash';
 export const SKIER_LEFT = 'skierLeft';
@@ -7,6 +8,7 @@ export const SKIER_LEFTDOWN = 'skierLeftDown';
 export const SKIER_DOWN = 'skierDown';
 export const SKIER_RIGHTDOWN = 'skierRightDown';
 export const SKIER_RIGHT = 'skierRight';
+export const SKIER_DEATH = 'skierDeath';
 export const TREE = 'tree';
 export const TREE_CLUSTER = 'treeCluster';
 export const ROCK1 = 'rock1';
@@ -34,6 +36,7 @@ export const SKIER_DIAGONAL_SPEED_REDUCER = 1.4142;
 
 export const ASSETS = {
     [SKIER_CRASH]: 'img/skier_crash.png',
+    [SKIER_DEATH]: 'img/skier_crash.png',
     [SKIER_LEFT]: 'img/skier_left.png',
     [SKIER_LEFTDOWN]: 'img/skier_left_down.png',
     [SKIER_DOWN]: 'img/skier_down.png',
@@ -68,6 +71,7 @@ export const SKIER_DIRECTIONS = {
     DOWN: 3,
     RIGHT_DOWN: 4,
     RIGHT: 5,
+    DEATH: 6,
 };
 
 export const SKIER_DIRECTION_ASSET = {
@@ -77,6 +81,7 @@ export const SKIER_DIRECTION_ASSET = {
     [SKIER_DIRECTIONS.DOWN]: SKIER_DOWN,
     [SKIER_DIRECTIONS.RIGHT_DOWN]: SKIER_RIGHTDOWN,
     [SKIER_DIRECTIONS.RIGHT]: SKIER_RIGHT,
+    [SKIER_DIRECTIONS.DEATH]: SKIER_CRASH,
 };
 
 export const SKIER_ACTIONS = {
@@ -95,6 +100,15 @@ export const JUMP_FRAMES = [
     SKIER_JUMP3,
     SKIER_JUMP4,
     SKIER_JUMP5,
+];
+
+export const RHINO_FRAMES = [
+    RHINO_LIFT,
+    RHINO_LIFT_MOUTH_OPEN,
+    RHINO_LIFT_EAT1,
+    RHINO_LIFT_EAT2,
+    RHINO_LIFT_EAT3,
+    RHINO_LIFT_EAT4
 ];
 
 export const GAME_STATUS = {

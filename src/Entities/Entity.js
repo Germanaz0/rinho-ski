@@ -63,7 +63,6 @@ export class Entity {
         // Callback to use with set interval
         const animateFrame = (resolve, reject) => {
             const currentFrame = frames.shift();
-
             // If we have no more frames, then finish the animation
             if (!currentFrame) {
                 clearInterval(this.animationInterval);

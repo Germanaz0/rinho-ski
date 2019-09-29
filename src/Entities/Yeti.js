@@ -15,14 +15,19 @@ export class Yeti extends Entity {
     }
 
     setActionImage(angle, skier) {
+        if (this.action === Constants.RHINO_ACTIONS.EATING) {
+            return false;
+        }
+
         if (this.x > skier.x) {
             this.assetName = angle > 120 ? Constants.RHINO_RUN_LEFT1 : Constants.RHINO_RUN_LEFT2;
         } else {
             this.assetName = Constants.RHINO_DEFAULT;
         }
     }
+
     move(assetManager, gameWindow, skier) {
-        this.speed = skier.speed - 4.4 ;
+        this.speed = skier.speed - 1;
 
         this.dx = (skier.x - this.x) * .125;
         this.dy = (skier.y - this.y) * .125;
@@ -43,6 +48,11 @@ export class Yeti extends Entity {
 
         const rhinoWins = this.checkIfRhinoWins(skier, assetManager);
         return new Promise((resolve, reject) => resolve(rhinoWins));
+    }
+
+    animateEat() {
+        this.action = Constants.RHINO_ACTIONS.EATING;
+        return this.animate([...Constants.RHINO_FRAMES], 3000);
     }
 
     checkIfRhinoWins(skier, assetManager) {

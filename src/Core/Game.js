@@ -19,12 +19,14 @@ export class Game {
         this.skier = new Skier(0, 0);
         this.obstacleManager = new ObstacleManager();
         this.overlayText = new OverlayText(this.canvas);
-        this.rhino = new Yeti(0, 0);
+        this.rhino = null;
         document.addEventListener('keydown', this.handleKeyDown.bind(this));
     }
 
     init() {
-
+        setTimeout(() => {
+            this.rhino = new Yeti(this.gameWindow.left, this.gameWindow.bottom);
+        }, Constants.RHINO_START_MILISECONDS);
     }
 
     async load() {
@@ -73,17 +75,34 @@ export class Game {
 
         this.skier.checkIfSkierHitObstacle(this.obstacleManager, this.assetManager);
 
-        this.rhino.move(this.assetManager, this.gameWindow, this.skier).then(rhinoWins => {
-            if (rhinoWins) {
-                this.setGameOver();
-            }
-        });
+        if (this.rhino) {
+            this.rhino.move(this.assetManager, this.gameWindow, this.skier)
+                .then(this.checkRhinhoWins.bind(this)).catch(() => {});
+        }
+
+    }
+
+    async checkRhinhoWins(rhinoWins) {
+
+        if (this.gameStatus === Constants.GAME_STATUS.GAME_OVER) {
+            return Promise.reject();
+        }
+
+        if (!rhinoWins) {
+            return Promise.reject();
+        }
+
+        this.skier.setDirection(Constants.SKIER_DIRECTIONS.DEATH);
+        this.setGameOver();
+        return Promise.resolve();
     }
 
     drawGameWindow() {
         this.canvas.setDrawOffset(this.gameWindow.left, this.gameWindow.top);
         this.skier.draw(this.canvas, this.assetManager);
-        this.rhino.draw(this.canvas, this.assetManager);
+        if (this.rhino) {
+            this.rhino.draw(this.canvas, this.assetManager);
+        }
         this.obstacleManager.drawObstacles(this.canvas, this.assetManager);
     }
 
@@ -108,7 +127,19 @@ export class Game {
             return false;
         }
 
-        this.gameStatus = Constants.GAME_STATUS.GAME_OVER;
+        if (typeof this.rhinoEating === 'undefined') {
+            this.rhinoEating = false;
+        }
+
+        if (this.rhinoEating) {
+            return false;
+        }
+
+        this.rhinoEating = true;
+
+        this.rhino.animateEat().then(() => {
+            this.gameStatus = Constants.GAME_STATUS.GAME_OVER;
+        });
     }
 
     setResumeGame() {
