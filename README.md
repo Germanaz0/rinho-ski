@@ -1,4 +1,4 @@
-# Southteams Ski Code Challenge
+# Ski Code Challenge
 
 You can test the site online [by clicking here](https://sad-lamarr-dde060.netlify.com/)
 
