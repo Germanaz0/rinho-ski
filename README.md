@@ -2,7 +2,7 @@
 
 You can test the site online [by clicking here](https://sad-lamarr-dde060.netlify.com/)
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/1a9c8de5-fc3d-4904-a5fd-15110abf6ef8/deploy-status)](https://app.netlify.com/sites/sad-lamarr-dde060/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1a9c8de5-fc3d-4904-a5fd-15110abf6ef8/deploy-status)](https://app.netlify.com/sites/sad-lamarr-dde060/deploys)  [![Build Status](https://travis-ci.org/Germanaz0/rinho-ski.svg?branch=master)](https://travis-ci.org/Germanaz0/rinho-ski)
 
 Or deploy it locally by running:
 ```
