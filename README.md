@@ -10,6 +10,11 @@ npm install
 npm run dev
 ```
 
+## System recommendations
+
+ - Node 10+
+ - NPM 6.9.0+ 
+
 ## What was done
 
 You can check the status of the tasks using the github kanban board.

@@ -156,5 +156,7 @@ export class Skier extends Entity {
         if(collision) {
             this.setDirection(Constants.SKIER_DIRECTIONS.CRASH);
         }
+
+        return !!collision;
     };
 }
